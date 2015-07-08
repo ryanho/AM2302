@@ -99,9 +99,31 @@ static PyObject *ths_temp(PyObject *self, PyObject *args) {
     return Py_BuildValue("f", f);
 }
 
+static PyObject *ths_all(PyObject *self, PyObject *args) {
+    int pin;
+    if (!PyArg_ParseTuple(args, "i", &pin)) return NULL;
+
+    int data[100];
+    int ret;
+    ret = read_ths(&data[0], pin);
+    if (ret < 0) return NULL;
+    if (ret == 0) return Py_None;
+
+    // yay!
+    float f;
+    f = (data[2] & 0x7F)* 256 + data[3];
+    f /= 10.0;
+    if (data[2] & 0x80) f *= -1;
+    float h;
+    h = data[0] * 256 + data[1];
+    h /= 10;
+    return Py_BuildValue("ff", f, h);
+}
+
 static PyMethodDef Am2302_thsMethods[] = {
     {"get_temperature", ths_temp, METH_VARARGS, "Get the temperature from a pin."},
     {"get_humidity", ths_humid, METH_VARARGS, "Get the humidity from a pin."},
+    {"get_values", ths_all, METH_VARARGS, "Get the temperature and humidity from a pin."},
     {NULL, NULL, 0, NULL}
 };
 

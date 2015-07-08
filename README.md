@@ -25,6 +25,10 @@ Reads the current temperature from a sensor attached to the specified pin.
 
 Reads the current humidity from a sensor attached to the specified pin.
 
+### get_all(pin)
+
+Reads the current temperature and humidity from a sensor attached to the specified pin.
+
 ## am2302_rpi
 
 This module provides a class *Sensor* which periodically polls the sensor
